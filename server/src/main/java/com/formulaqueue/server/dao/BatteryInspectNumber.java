@@ -3,11 +3,12 @@ package com.formulaqueue.server.dao;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalTime;
 
 @Entity
-public class BatteryInspectNumber {
+public class BatteryInspectNumber extends RepresentationModel<BatteryInspectNumber> {
     @Id
     @GeneratedValue
     private Long id;

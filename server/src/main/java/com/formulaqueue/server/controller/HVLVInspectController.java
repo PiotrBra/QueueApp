@@ -5,12 +5,19 @@ import com.formulaqueue.server.dao.MechInspectNumber;
 import com.formulaqueue.server.service.HVLVInspectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
@@ -19,13 +26,32 @@ public class HVLVInspectController {
     private HVLVInspectService service;
 
     @GetMapping("/hvlvinspection/numbers")
-    public List<HVLVInspectNumber> getAllNumbers(){
-        return service.getNumbers();
+    public ResponseEntity<CollectionModel<EntityModel<HVLVInspectNumber>>> getAllNumbers(){
+        List<HVLVInspectNumber> numbers = service.getNumbers();
+        List<EntityModel<HVLVInspectNumber>> numberModels = numbers
+                .stream()
+                .map(number -> EntityModel.of(number,
+                        linkTo(methodOn(HVLVInspectController.class)
+                                .getAllNumbers()).withSelfRel(),
+                        linkTo(methodOn(HVLVInspectController.class)
+                                .deleteNumber(number.getId())).withRel("delete")))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(CollectionModel.of(numberModels,
+                linkTo(methodOn(HVLVInspectController.class).getAllNumbers()).withSelfRel()));
     }
 
+
     @PostMapping("/hvlvinspection/numbers")
-    public HVLVInspectNumber addNumber(@RequestParam String carName){
-        return service.create(new HVLVInspectNumber(carName));
+    public ResponseEntity<EntityModel<HVLVInspectNumber>> addNumber(@RequestParam String carName){
+        HVLVInspectNumber savedNumber = service.create(new HVLVInspectNumber(carName));
+        EntityModel<HVLVInspectNumber> numberModel = EntityModel.of(savedNumber,
+                linkTo(methodOn(HVLVInspectController.class).getAllNumbers()).withRel("allNumbers"),
+                linkTo(methodOn(HVLVInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
+
+        return ResponseEntity.created(linkTo(methodOn(HVLVInspectController.class)
+                .addNumber(carName)).toUri()).body(numberModel);
+
     }
 
     @DeleteMapping("/hvlvinspection/numbers/{id}")

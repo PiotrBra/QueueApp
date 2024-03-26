@@ -2,14 +2,21 @@ package com.formulaqueue.server.controller;
 
 
 import com.formulaqueue.server.dao.BatteryInspectNumber;
+import com.formulaqueue.server.dao.HVLVInspectNumber;
 import com.formulaqueue.server.service.BatteryInspectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class BatteryInspectController {
@@ -17,13 +24,32 @@ public class BatteryInspectController {
     private BatteryInspectService service;
 
     @GetMapping("/batteryinspection/numbers")
-    public List<BatteryInspectNumber> getAllNumbers(){
-        return service.getNumbers();
+    public ResponseEntity<CollectionModel<EntityModel<BatteryInspectNumber>>> getAllNumbers(){
+        List<BatteryInspectNumber> numbers = service.getNumbers();
+        List<EntityModel<BatteryInspectNumber>> numberModels = numbers
+                .stream()
+                .map(number -> EntityModel.of(number,
+                        linkTo(methodOn(BatteryInspectController.class)
+                                .getAllNumbers()).withSelfRel(),
+                        linkTo(methodOn(BatteryInspectController.class)
+                                .deleteNumber(number.getId())).withRel("delete")))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(CollectionModel.of(numberModels,
+                linkTo(methodOn(BatteryInspectController.class).getAllNumbers()).withSelfRel()));
     }
 
+
     @PostMapping("/batteryinspection/numbers")
-    public BatteryInspectNumber addNumber(@RequestParam String carName){
-        return service.create(new BatteryInspectNumber(carName));
+    public ResponseEntity<EntityModel<BatteryInspectNumber>> addNumber(@RequestParam String carName){
+        BatteryInspectNumber savedNumber = service.create(new BatteryInspectNumber(carName));
+        EntityModel<BatteryInspectNumber> numberModel = EntityModel.of(savedNumber,
+                linkTo(methodOn(BatteryInspectController.class).getAllNumbers()).withRel("allNumbers"),
+                linkTo(methodOn(BatteryInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
+
+        return ResponseEntity.created(linkTo(methodOn(MechInspectController.class)
+                .addNumber(carName)).toUri()).body(numberModel);
+
     }
 
     @DeleteMapping("/batteryinspection/numbers/{id}")

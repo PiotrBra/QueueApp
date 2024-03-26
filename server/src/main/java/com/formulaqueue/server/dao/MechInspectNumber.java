@@ -4,11 +4,12 @@ package com.formulaqueue.server.dao;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalTime;
 
 @Entity
-public class MechInspectNumber{
+public class MechInspectNumber extends RepresentationModel<MechInspectNumber> {
 
     @Id
     @GeneratedValue
