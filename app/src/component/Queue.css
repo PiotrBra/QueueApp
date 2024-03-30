@@ -1,0 +1,40 @@
+/* Styl dla komponentu BatteryQueue */
+.queue {
+    margin: 20px;
+    padding: 20px;
+    background-color: #222; /* Ciemny kolor tła */
+    border-radius: 5px; /* Zaokrąglenie krawędzi */
+}
+
+.queue h2 {
+    color: #fff; /* Kolor czcionki dla nagłówka */
+}
+
+.queue button {
+    margin-bottom: 10px; /* Odstęp między przyciskiem a listą */
+    padding: 8px 16px;
+    background-color: #333; /* Kolor tła przycisku */
+    color: #fff; /* Kolor czcionki przycisku */
+    border: none;
+    border-radius: 5px; /* Zaokrąglenie krawędzi przycisku */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Animacja zmiany koloru tła */
+}
+
+.queue button:hover {
+    background-color: #555; /* Kolor tła przycisku po najechaniu kursorem myszy */
+}
+
+.queue ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.queue ul li {
+    margin-top: 10px; /* Odstęp między elementami listy */
+}
+
+.queue ul li strong {
+    color: #fff; /* Kolor czcionki dla elementów listy */
+}

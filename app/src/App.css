@@ -1,0 +1,67 @@
+/* Resetowanie stylów dla obiektów HTML */
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #333; /* kolor tła */
+    color: #fff; /* kolor czcionki */
+}
+
+/* Ustawienie głównego kontenera na flexbox */
+.app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+/* Styl dla tytułu */
+.title {
+    margin-top: 20px; /* Dostosuj odstęp od góry */
+}
+
+/* Styl dla nawigacji */
+.tiles {
+    margin-top: 20px; /* Dostosuj odstęp od tytułu */
+}
+
+.tiles ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.tiles ul li {
+    margin-right: 20px; /* Dostosuj odstęp między linkami */
+}
+
+/* Styl dla linków */
+.tiles ul li a {
+    text-decoration: none;
+    color: #fff; /* Kolor czcionki dla linków */
+    padding: 10px 20px;
+    background-color: #000; /* Kolor tła dla kafelków */
+    border-radius: 5px; /* Zaokrąglenie krawędzi */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Cień */
+    transition: all 0.3s ease; /* Animacja przy najechaniu kursorem myszy */
+}
+
+/* Efekt animacji przy najechaniu kursorem myszy */
+.tiles ul li a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Media queries dla responsywności */
+@media screen and (max-width: 768px) {
+    .tiles ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .tiles ul li {
+        margin-right: 0;
+        margin-bottom: 10px; /* Dostosuj odstęp między linkami dla mniejszych ekranów */
+    }
+}

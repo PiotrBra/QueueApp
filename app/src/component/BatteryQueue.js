@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import socketIOClient from 'socket.io-client';
 import BatteryNumberAdd from "./BatteryNumberAdd";
+import "./Queue.css"
+
+const ENDPOINT = "http://localhost:8080/websocket";
 
 const BatteryQueue = () => {
     const [numbers, setNumbers] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
 
+    const socket = socketIOClient(ENDPOINT);
 
     const fetchNumbers = async () => {
         try {
@@ -15,6 +20,14 @@ const BatteryQueue = () => {
             console.error('Error fetching numbers:', error);
         }
     };
+
+    useEffect(() => {
+        socket.on("newNumber", (newNumber) => {
+            setNumbers(prevNumbers => [...prevNumbers, newNumber]);
+        });
+
+        return () => socket.disconnect();
+    }, []);
 
     useEffect(() => {
         fetchNumbers();
@@ -37,7 +50,7 @@ const BatteryQueue = () => {
     };
 
     return (
-        <div>
+        <div className="queue">
             <h2>Battery Inspection Numbers</h2>
             <button onClick={toggleAddForm}>Add Number</button> {/* Przycisk do wyświetlenia formularza */}
             {showAddForm && <BatteryNumberAdd />}

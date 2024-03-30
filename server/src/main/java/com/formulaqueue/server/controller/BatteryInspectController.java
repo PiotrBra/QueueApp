@@ -8,6 +8,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class BatteryInspectController {
     @Autowired
     private BatteryInspectService service;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
 
     @GetMapping("/batteryinspection/numbers")
     public ResponseEntity<CollectionModel<EntityModel<BatteryInspectNumber>>> getAllNumbers(){
@@ -45,6 +50,8 @@ public class BatteryInspectController {
         EntityModel<BatteryInspectNumber> numberModel = EntityModel.of(savedNumber,
                 linkTo(methodOn(BatteryInspectController.class).getAllNumbers()).withRel("allNumbers"),
                 linkTo(methodOn(BatteryInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
+
+        messagingTemplate.convertAndSend("/topic/newNumbers", numberModel);
 
         return ResponseEntity.created(linkTo(methodOn(BatteryInspectController.class)
                 .getAllNumbers()).toUri()).body(numberModel);

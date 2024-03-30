@@ -9,8 +9,8 @@ function App() {
     return (
         <Router>
             <div className="app">
-                <h1>sqrut</h1>
-                <nav>
+                <h1 className = "title">sqrut</h1>
+                <nav className="tiles">
                     <ul>
                         <li><Link to="/mechanical">Mechanical Queue</Link></li>
                         <li><Link to="/battery">Battery Queue</Link></li>
