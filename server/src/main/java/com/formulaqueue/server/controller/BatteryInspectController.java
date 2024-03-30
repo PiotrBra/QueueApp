@@ -2,7 +2,6 @@ package com.formulaqueue.server.controller;
 
 
 import com.formulaqueue.server.dao.BatteryInspectNumber;
-import com.formulaqueue.server.dao.HVLVInspectNumber;
 import com.formulaqueue.server.service.BatteryInspectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -47,8 +46,9 @@ public class BatteryInspectController {
                 linkTo(methodOn(BatteryInspectController.class).getAllNumbers()).withRel("allNumbers"),
                 linkTo(methodOn(BatteryInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
 
-        return ResponseEntity.created(linkTo(methodOn(MechInspectController.class)
-                .addNumber(carName)).toUri()).body(numberModel);
+        return ResponseEntity.created(linkTo(methodOn(BatteryInspectController.class)
+                .getAllNumbers()).toUri()).body(numberModel);
+
 
     }
 

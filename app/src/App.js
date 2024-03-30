@@ -1,27 +1,32 @@
-
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React from 'react';
 import './App.css';
-import QueueList from "./component/QueueList";
+import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
+import MechanicalQueue from './component/MechanicalQueue';
+import BatteryQueue from './component/BatteryQueue';
+import HVLVQueue from './component/HVLVQueue';
+
 function App() {
-  return (
-    <div className="App">
-        <header className="app-header">
-              <h2>Sqrut FSP queue</h2>
-        </header>
-        <div className="app-body">
-            {/*................................TO DO.........................*/}
-            <Router>
+    return (
+        <Router>
+            <div className="app">
+                <h1>sqrut</h1>
+                <nav>
+                    <ul>
+                        <li><Link to="/mechanical">Mechanical Queue</Link></li>
+                        <li><Link to="/battery">Battery Queue</Link></li>
+                        <li><Link to="/hvlv">HVLV Queue</Link></li>
+                    </ul>
+                </nav>
                 <Routes>
-                    <Route exact path ="/" element={<App/>}/>
-                    <Route path = "/mechanical/inspection" element={<QueueList/>}/>
-                    <Route path = "/battery/inspection" element={<QueueList/>}/>
-                    <Route path = "/battery/inspection" element={<QueueList/>}/>
-                    <Route path = "/HVLV/inspection" element={<QueueList/>}/>
+                    <Route index path="/"/>
+                    <Route path="/mechanical" element={< MechanicalQueue />}/>
+                    <Route path="/battery" element={< BatteryQueue />}/>
+                    <Route path="/hvlv" element={< HVLVQueue />}/>
                 </Routes>
-            </Router>
-        </div>
-    </div>
-  );
+
+            </div>
+        </Router>
+    );
 }
 
 export default App;
