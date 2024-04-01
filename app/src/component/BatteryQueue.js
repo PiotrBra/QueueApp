@@ -1,16 +1,15 @@
+// BatteryQueue.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import socketIOClient from 'socket.io-client';
 import BatteryNumberAdd from "./BatteryNumberAdd";
 import "./Queue.css"
 
-const ENDPOINT = "http://localhost:8080/websocket";
+
 
 const BatteryQueue = () => {
     const [numbers, setNumbers] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
 
-    const socket = socketIOClient(ENDPOINT);
 
     const fetchNumbers = async () => {
         try {
@@ -21,13 +20,7 @@ const BatteryQueue = () => {
         }
     };
 
-    useEffect(() => {
-        socket.on("newNumber", (newNumber) => {
-            setNumbers(prevNumbers => [...prevNumbers, newNumber]);
-        });
 
-        return () => socket.disconnect();
-    }, []);
 
     useEffect(() => {
         fetchNumbers();
@@ -49,11 +42,15 @@ const BatteryQueue = () => {
         setShowAddForm(!showAddForm); // Funkcja do przełączania widoczności formularza
     };
 
+    const handleNumberAdded = () => {
+        fetchNumbers(); // Pobranie danych po dodaniu numeru
+    };
+
     return (
         <div className="queue">
             <h2>Battery Inspection Numbers</h2>
             <button onClick={toggleAddForm}>Add Number</button> {/* Przycisk do wyświetlenia formularza */}
-            {showAddForm && <BatteryNumberAdd />}
+            {showAddForm && <BatteryNumberAdd onNumberAdded={handleNumberAdded} />}
             <ul>
                 {numbers.map((number) => (
                     <li key={number.id}>
