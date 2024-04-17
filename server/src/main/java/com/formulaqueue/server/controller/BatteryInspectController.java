@@ -8,13 +8,13 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.formulaqueue.server.utils.DataValidator.isDataNotValid;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -23,8 +23,6 @@ public class BatteryInspectController {
     @Autowired
     private BatteryInspectService service;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
 
     @GetMapping("/batteryinspection/numbers")
@@ -46,17 +44,21 @@ public class BatteryInspectController {
 
     @PostMapping("/batteryinspection/numbers")
     public ResponseEntity<EntityModel<BatteryInspectNumber>> addNumber(@RequestParam String carName){
-        BatteryInspectNumber savedNumber = service.create(new BatteryInspectNumber(carName));
-        EntityModel<BatteryInspectNumber> numberModel = EntityModel.of(savedNumber,
-                linkTo(methodOn(BatteryInspectController.class).getAllNumbers()).withRel("allNumbers"),
-                linkTo(methodOn(BatteryInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
+        try {
+            if(isDataNotValid("battery inspection", carName)) {
+                BatteryInspectNumber savedNumber = service.create(new BatteryInspectNumber(carName));
+                EntityModel<BatteryInspectNumber> numberModel = EntityModel.of(savedNumber,
+                        linkTo(methodOn(BatteryInspectController.class).getAllNumbers()).withRel("allNumbers"),
+                        linkTo(methodOn(BatteryInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
 
-        messagingTemplate.convertAndSend("/topic/newNumbers", numberModel);
+                return ResponseEntity.created(linkTo(methodOn(BatteryInspectController.class)
+                        .getAllNumbers()).toUri()).body(numberModel);
+            }
 
-        return ResponseEntity.created(linkTo(methodOn(BatteryInspectController.class)
-                .getAllNumbers()).toUri()).body(numberModel);
-
-
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 
     @DeleteMapping("/batteryinspection/numbers/{id}")

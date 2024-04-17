@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.formulaqueue.server.utils.DataValidator.isDataNotValid;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -25,6 +26,7 @@ public class MechInspectController {
 
     @GetMapping("/mechanicalinspection/numbers")
     public ResponseEntity<CollectionModel<EntityModel<MechInspectNumber>>> getAllNumbers(){
+
         List<MechInspectNumber> numbers = service.getNumbers();
         List<EntityModel<MechInspectNumber>> numberModels = numbers.stream()
                 .map(number -> EntityModel.of(number,
@@ -40,12 +42,19 @@ public class MechInspectController {
 
     @PostMapping("/mechanicalinspection/numbers")
     public ResponseEntity<EntityModel<MechInspectNumber>> addNumber(@RequestParam String carName){
-        MechInspectNumber savedNumber = service.create(new MechInspectNumber(carName));
-        EntityModel<MechInspectNumber> numberModel = EntityModel.of(savedNumber,
-                linkTo(methodOn(MechInspectController.class).getAllNumbers()).withRel("allNumbers"),
-                linkTo(methodOn(MechInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
-        return ResponseEntity.created(linkTo(methodOn(MechInspectController.class)
-                .addNumber(carName)).toUri()).body(numberModel);
+        try {
+            if(isDataNotValid("mechanical inspection", carName)) {
+                MechInspectNumber savedNumber = service.create(new MechInspectNumber(carName));
+                EntityModel<MechInspectNumber> numberModel = EntityModel.of(savedNumber,
+                        linkTo(methodOn(MechInspectController.class).getAllNumbers()).withRel("allNumbers"),
+                        linkTo(methodOn(MechInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
+                return ResponseEntity.created(linkTo(methodOn(MechInspectController.class)
+                        .addNumber(carName)).toUri()).body(numberModel);
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 
     @DeleteMapping("/mechanicalinspection/numbers/{id}")

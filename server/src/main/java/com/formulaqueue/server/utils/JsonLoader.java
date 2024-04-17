@@ -18,14 +18,12 @@ public class JsonLoader {
             String jsonContent = new String(Files.readAllBytes(Paths.get(path)));
             JSONObject jsonObject = new JSONObject(jsonContent);
 
-            // Sprawdź, czy plik JSON zawiera sekcję "batteryInspection"
             if (jsonObject.has("batteryInspection")) {
                 JSONArray array = jsonObject.getJSONArray("batteryInspection");
 
-                // Iteruj przez każdy obiekt w sekcji "batteryInspection"
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject inspectionObject = array.getJSONObject(i);
-                    // Pobierz numer samochodu i dodaj go do listy
+
                     String carNumber = inspectionObject.getString("carNumber");
                     allowedCars.add(carNumber);
                 }
@@ -33,21 +31,19 @@ public class JsonLoader {
             else if (jsonObject.has("mechanicalInspection")) {
                 JSONArray array = jsonObject.getJSONArray("mechanicalInspection");
 
-                // Iteruj przez każdy obiekt w sekcji "batteryInspection"
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject inspectionObject = array.getJSONObject(i);
-                    // Pobierz numer samochodu i dodaj go do listy
+
                     String carNumber = inspectionObject.getString("carNumber");
                     allowedCars.add(carNumber);
                 }
             }
-            else if (jsonObject.has("hvlvInspection")) {
-                JSONArray array = jsonObject.getJSONArray("hvlvInspection");
+            else if (jsonObject.has("HVLVInspection")) {
+                JSONArray array = jsonObject.getJSONArray("HVLVInspection");
 
-                // Iteruj przez każdy obiekt w sekcji "batteryInspection"
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject inspectionObject = array.getJSONObject(i);
-                    // Pobierz numer samochodu i dodaj go do listy
+
                     String carNumber = inspectionObject.getString("carNumber");
                     allowedCars.add(carNumber);
                 }

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.formulaqueue.server.utils.DataValidator.isDataNotValid;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -44,14 +45,20 @@ public class HVLVInspectController {
 
     @PostMapping("/hvlvinspection/numbers")
     public ResponseEntity<EntityModel<HVLVInspectNumber>> addNumber(@RequestParam String carName){
-        HVLVInspectNumber savedNumber = service.create(new HVLVInspectNumber(carName));
-        EntityModel<HVLVInspectNumber> numberModel = EntityModel.of(savedNumber,
-                linkTo(methodOn(HVLVInspectController.class).getAllNumbers()).withRel("allNumbers"),
-                linkTo(methodOn(HVLVInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
+        try {
+            if(isDataNotValid("hvlv inspection", carName)) {
+                HVLVInspectNumber savedNumber = service.create(new HVLVInspectNumber(carName));
+                EntityModel<HVLVInspectNumber> numberModel = EntityModel.of(savedNumber,
+                        linkTo(methodOn(HVLVInspectController.class).getAllNumbers()).withRel("allNumbers"),
+                        linkTo(methodOn(HVLVInspectController.class).deleteNumber(savedNumber.getId())).withRel("delete"));
 
-        return ResponseEntity.created(linkTo(methodOn(HVLVInspectController.class)
-                .addNumber(carName)).toUri()).body(numberModel);
-
+                return ResponseEntity.created(linkTo(methodOn(HVLVInspectController.class)
+                        .addNumber(carName)).toUri()).body(numberModel);
+            }
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 
     @DeleteMapping("/hvlvinspection/numbers/{id}")
