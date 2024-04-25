@@ -61,8 +61,8 @@ public class HVLVInspectController {
         return ResponseEntity.badRequest().body(null);
     }
 
-    @DeleteMapping("/hvlvinspection/numbers/{id}")
-    public ResponseEntity<Map<String, String>> deleteNumber(@PathVariable Long id){
+    @DeleteMapping("/hvlvinspection/numbers")
+    public ResponseEntity<Map<String, String>> deleteNumber(@RequestParam Long id){
         HVLVInspectNumber number = service.getNumberById(id);
         if(number == null){
             Map<String,String> json = Map.of("messege", "Number not found");

@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
 import MechanicalQueue from './component/MechanicalQueue';
 import BatteryQueue from './component/BatteryQueue';
 import HVLVQueue from './component/HVLVQueue';
+import ModeratorPage from "./component/ModeratorPage";
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/mechanical" element={< MechanicalQueue />}/>
                     <Route path="/battery" element={< BatteryQueue />}/>
                     <Route path="/hvlv" element={< HVLVQueue />}/>
+                    <Route path="/mod" element={< ModeratorPage />}/>
                 </Routes>
 
             </div>

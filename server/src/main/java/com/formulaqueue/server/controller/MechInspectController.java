@@ -57,8 +57,8 @@ public class MechInspectController {
         return ResponseEntity.badRequest().body(null);
     }
 
-    @DeleteMapping("/mechanicalinspection/numbers/{id}")
-    public ResponseEntity<Map<String, String>> deleteNumber(@PathVariable Long id){
+    @DeleteMapping("/mechanicalinspection/numbers")
+    public ResponseEntity<Map<String, String>> deleteNumber(@RequestParam Long id){
         MechInspectNumber number = service.getNumberById(id);
         if(number == null){
             Map<String,String> json = Map.of("message", "Number not found");

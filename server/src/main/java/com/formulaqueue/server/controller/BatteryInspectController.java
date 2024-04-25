@@ -23,8 +23,6 @@ public class BatteryInspectController {
     @Autowired
     private BatteryInspectService service;
 
-
-
     @GetMapping("/batteryinspection/numbers")
     public ResponseEntity<CollectionModel<EntityModel<BatteryInspectNumber>>> getAllNumbers(){
         List<BatteryInspectNumber> numbers = service.getNumbers();
@@ -61,8 +59,8 @@ public class BatteryInspectController {
         return ResponseEntity.badRequest().body(null);
     }
 
-    @DeleteMapping("/batteryinspection/numbers/{id}")
-    public ResponseEntity<Map<String, String>> deleteNumber(@PathVariable Long id){
+    @DeleteMapping("/batteryinspection/numbers")
+    public ResponseEntity<Map<String, String>> deleteNumber(@RequestParam() Long id){
         BatteryInspectNumber number = service.getNumberById(id);
         if(number == null){
             Map<String,String> json = Map.of("messege", "Number not found");
