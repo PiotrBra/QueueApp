@@ -22,9 +22,16 @@ const BatteryQueue = () => {
 
 
 
+    // Automatyczne odświeżanie danych co jakiś czas
     useEffect(() => {
-        fetchNumbers();
-    }, []); // Pobranie danych przy załadowaniu komponentu
+        const interval = setInterval(() => {
+            fetchNumbers();
+        }, 5000); // Odświeżanie co 5 sekund (możesz dostosować tę wartość do własnych potrzeb)
+
+        // Czyszczenie interwału po odmontowaniu komponentu
+        return () => clearInterval(interval);
+    }, []);
+
 
     const addNumber = async (carName) => {
         try {
