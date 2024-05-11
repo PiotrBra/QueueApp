@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import BatteryQueue from "./BatteryQueue";
+import MechanicalQueue from "./MechanicalQueue";
+import HVLVQueue from "./HVLVQueue";
 
-function ModeratorPage() {
+const ModeratorPage = () => {
     const [numberToRemoveBattery, setNumberToRemoveBattery] = useState('');
     const [numberToRemoveMechanical, setNumberToRemoveMechanical] = useState('');
     const [numberToRemoveHVLV, setNumberToRemoveHVLV] = useState('');
@@ -51,6 +54,8 @@ function ModeratorPage() {
     return (
         <div>
             <h2>Moderator Panel</h2>
+
+            {/* Formularz dla kolejki baterii */}
             <form onSubmit={handleSubmitBattery}>
                 <label>
                     Remove number from Battery Queue:
@@ -58,7 +63,9 @@ function ModeratorPage() {
                 </label>
                 <button type="submit">Remove</button>
             </form>
+            <BatteryQueue />
 
+            {/* Formularz dla kolejki mechanical */}
             <form onSubmit={handleSubmitMechanical}>
                 <label>
                     Remove number from Mechanical Queue:
@@ -66,7 +73,9 @@ function ModeratorPage() {
                 </label>
                 <button type="submit">Remove</button>
             </form>
+            <MechanicalQueue />
 
+            {/* Formularz dla kolejki HVLV */}
             <form onSubmit={handleSubmitHVLV}>
                 <label>
                     Remove number from HVLV Queue:
@@ -74,6 +83,7 @@ function ModeratorPage() {
                 </label>
                 <button type="submit">Remove</button>
             </form>
+            <HVLVQueue />
         </div>
     );
 }

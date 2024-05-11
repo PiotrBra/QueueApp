@@ -26,7 +26,7 @@ const MechanicalNumberAdd = ({ onNumberAdded }) => { // Przekazujemy funkcję on
 
     return (
         <div>
-            <h2>Add HVLV Inspection Number</h2>
+            <h2>Add Mechanical Inspection Number</h2>
             <form onSubmit={handleSubmit}>
                 <label>
                     Car Name:

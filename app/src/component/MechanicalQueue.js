@@ -1,12 +1,10 @@
-// MechanicalQueue.js
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
-import MechanicalNumberAdd from "./MechanicalNumberAdd";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import MechanicalNumberAdd from './MechanicalNumberAdd';
 
 function MechanicalQueue() {
     const [numbers, setNumbers] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
-
 
     const fetchNumbers = async () => {
         try {
@@ -14,26 +12,17 @@ function MechanicalQueue() {
             setNumbers(response.data._embedded.mechInspectNumberList);
         } catch (error) {
             console.error('Error fetching numbers:', error);
+            setNumbers([]); // Ustawianie pustej tablicy w przypadku błędu
         }
     };
-
-
 
     useEffect(() => {
-        fetchNumbers();
-    }, []); // Pobranie danych przy załadowaniu komponentu
+        fetchNumbers(); // Wywołanie funkcji pobierającej dane przy pierwszym renderowaniu
+        const interval = setInterval(fetchNumbers, 500); // Odświeżanie co 0.5 sekundy
 
-    const addNumber = async (carName) => {
-        try {
-            // Wyślij żądanie dodania numeru
-            await axios.post('http://localhost:8080/mechanicalinspection/numbers', { carName });
-
-            // Po dodaniu numeru, zaktualizuj dane komponentu pobierając najnowsze dane z serwera
-            fetchNumbers();
-        } catch (error) {
-            console.error('Error adding number:', error);
-        }
-    };
+        // Czyszczenie interwału po odmontowaniu komponentu
+        return () => clearInterval(interval);
+    }, []);
 
     const toggleAddForm = () => {
         setShowAddForm(!showAddForm); // Funkcja do przełączania widoczności formularza
@@ -45,15 +34,21 @@ function MechanicalQueue() {
 
     return (
         <div className="queue">
-            <h2>HVLV Inspection Numbers</h2>
-            <button onClick={toggleAddForm}>Add Number</button> {/* Przycisk do wyświetlenia formularza */}
+            <h2>Mechanical Inspection Numbers</h2>
+            <button onClick={toggleAddForm}>Add Number</button>
+            {/* Przycisk do wyświetlenia formularza */}
             {showAddForm && <MechanicalNumberAdd onNumberAdded={handleNumberAdded} />}
+
             <ul>
-                {numbers.map((number) => (
-                    <li key={number.id}>
-                        <strong>numer: {number.id}; nazwa auta: {number.carName}</strong>
-                    </li>
-                ))}
+                {numbers.length > 0 ? (
+                    numbers.map((number) => (
+                        <li key={number.id}>
+                            <strong>numer: {number.id}; nazwa auta: {number.carName}</strong>
+                        </li>
+                    ))
+                ) : (
+                    <li>Kolejka jest pusta</li>
+                )}
             </ul>
         </div>
     );
